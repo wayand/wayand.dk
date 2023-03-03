@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <title>wayand.dk | {{ page.title if page else '--' }}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="title" content="{{ title | default('title not found', true) }}">
+        <meta name="description" content="admin site">
+        <meta name="keywords" content="" />
+        <link rel="canonical" href="https://wayand.dk">
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename='admin/img/favicon/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='admin/img/favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='admin/img/favicon/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ url_for('static', filename='admin/img/favicon/site.webmanifest') }}">
+        <link rel="mask-icon" href="{{ url_for('static', filename='admin/img/favicon/safari-pinned-tab.svg') }}" color="#ffffff">
+
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- css stylesheet-->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous" />
+
+        <!-- Sweet Alert -->
+        <link type="text/css" href="{{url_for('static', filename='admin/vendor/sweetalert2/dist/sweetalert2.min.css')}}" rel="stylesheet">
+        <!-- Notyf -->
+        <link type="text/css" href="{{url_for('static', filename='admin/vendor/notyf/notyf.min.css')}}" rel="stylesheet">
+        <!-- Choices.js CSS -->
+        <link type="text/css" href="{{url_for('static', filename='admin/vendor/choices.js/choices.min.css')}}" rel="stylesheet">
+        <!-- Volt CSS -->
+        <link type="text/css" href="{{url_for('static', filename='admin/css/volt.css')}}" rel="stylesheet">
+
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+
+        {% include 'admin/_sidebar.html' %}
+
+        {% block content %}
+            <main class="content">
+
+                {% include 'admin/_app_top_nav.html' %}
+
+                {% if page and page.can_show_component_new %}
+                    {% include 'admin/components/new.html' %}
+                {% endif %}
+
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="mt-3">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{category}}" role="alert">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% endwith %}
+
+                {# application content needs to be provided in the app_content block #}
+                {% block app_content %}{% endblock %}
+
+                {% block app_footer %}
+                    {% include 'admin/_appfooter.html' %}
+                {% endblock%}
+            </main>
+            <form id="logoutForm" method="POST" action="{{ url_for('admin.logout') }}"></form>
+        {% endblock %}
+
+        {% block script %}
+            <!-- Core -->
+            <script src="{{ url_for('static', filename='admin/vendor/@popperjs/core/dist/umd/popper.min.js') }}"></script>
+            <script src="{{url_for('static', filename='admin/vendor/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+
+            <!-- Smooth scroll -->
+            <script src="{{ url_for('static', filename='admin/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') }}"></script>
+
+            <!-- Charts -->
+            <script src="{{ url_for('static', filename='admin/vendor/chartist/dist/chartist.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='admin/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') }}"></script>
+
+            <!-- Datepicker -->
+            <script src="{{ url_for('static', filename='admin/vendor/vanillajs-datepicker/dist/js/datepicker.min.js') }}"></script>
+
+            <!-- Sweet Alerts 2 -->
+            <script src="{{ url_for('static', filename='admin/vendor/sweetalert2/dist/sweetalert2.all.min.js') }}"></script>
+
+            <!-- Notyf -->
+            <script src="{{ url_for('static', filename='admin/vendor/notyf/notyf.min.js') }}"></script>
+
+            <!-- Github buttons -->
+            <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+            <!-- Include Choices JavaScript -->
+            <script src="{{ url_for('static', filename='admin/vendor/choices.js/choices.min.js') }}"></script>
+
+            <!-- Volt JS -->
+            <script src="{{ url_for('static', filename='admin/js/volt.js') }}"></script>
+
+            <script>
+                function logout() {
+                    document.getElementById("logoutForm").submit();
+                }
+            </script>
+        {% endblock %}
+    </body>
+</html>

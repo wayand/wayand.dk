@@ -1,0 +1,35 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<!--  Start Blog List  -->
+    <div class="archive">
+
+        <ul class="post-list">
+        {% for post in posts.items %}
+        {% include 'frontend/blog/_post.html' %}
+        {% endfor %}
+        </ul>
+
+        <div class="pagination">
+
+            {% if prev_url %}
+            <a href="{{ prev_url }}">
+                <i class="fas fa-angle-left"></i>
+            </a>
+            {% endif %}
+
+            <span class="page-number">Page
+                {{ posts.page }} 
+                    of 
+                {{ posts.pages }}
+            </span>
+
+            {% if next_url %}
+                <a href="{{ next_url }}">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+<!--  End Blog List   -->
+{% endblock %}

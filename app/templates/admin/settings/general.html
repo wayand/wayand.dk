@@ -1,0 +1,120 @@
+{% extends 'admin/base.html' %}
+
+{% block app_content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('admin.dashboard') }}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                                </path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ page.h1 }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">General Settings</h2>
+            <p class="mb-0">general settings</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md-10 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-body pt-4">
+                    <form id="FormGeneralSettings" method="POST">
+                        <div class="row mb-3">
+                            <label for="siteTitle" class="col-sm-3 col-form-label">Site Title</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="siteTitle" value="{{ settings['siteTitle'].value }}" class="form-control" id="siteTitle">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="adminEmail" class="col-sm-3 col-form-label">Admin Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" name="adminEmail" value="{{ settings['adminEmail'].value }}" class="form-control" id="adminEmail">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="siteLanguage" class="col-sm-3 col-form-label">Site Language</label>
+                            <div class="col-sm-9">
+                                <select class="form-select mb-0" name="siteLanguage" id="siteLanguage" aria-label="Gender select example">
+                                    <option value="en"{{' selected' if settings['siteLanguage'].value=='en' else '' }}>English</option>
+                                    <option value="da"{{' selected' if settings['siteLanguage'].value=='da' else '' }}>Danish</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <label for="numberOfPostsOnBlogPage" class="col-sm-3 col-form-label">Posts on Blog page </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" name="numberOfPostsOnBlogPage" id="numberOfPostsOnBlogPage" type="number" value="{{ settings['numberOfPostsOnBlogPage'].value }}" placeholder="No." required="">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">include on Blog page posts </label>
+                            <div class="col-sm-9">
+                                <div class="form-check">
+                                    <input name="includeOnBlogPagePosts" value="fullContent" type="radio" class="form-check-input" id="includeOnBlogPagePosts--fullContent" {{ 'checked' if settings['includeOnBlogPagePosts'].value == 'fullContent' else '' }}>
+                                    <label for="includeOnBlogPagePosts--fullContent" class="form-check-label">Full content</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="includeOnBlogPagePosts" value="excerpt" type="radio" class="form-check-input" id="includeOnBlogPagePosts--excerpt" {{ 'checked' if settings['includeOnBlogPagePosts'].value == 'excerpt' else '' }}>
+                                    <label for="includeOnBlogPagePosts--excerpt" class="form-check-label">Excerpt</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Date format</label>
+                            <div class="col-sm-9">
+                                <div class="form-check">
+                                    <input name="dateFormat" value="%d %b, %Y" type="radio" class="form-check-input" id="dateFormat--d_b_Y" {{ 'checked' if settings['dateFormat'].value == '%d %b, %Y' else '' }}>
+                                    <label for="dateFormat--d_b_Y" class="form-check-label">01 Dec, 2022</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="dateFormat" value="%b %d, %Y" type="radio" class="form-check-input" id="dateFormat--b_d_Y" {{ 'checked' if settings['dateFormat'].value == '%b %d, %Y' else '' }}>
+                                    <label for="dateFormat--b_d_Y" class="form-check-label">Dec 01, 2022</label>
+                                </div>
+                                <STRONG>Preview:</STRONG> December 7, 2022
+
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label">Time format</label>
+                            <div class="col-sm-9">
+                                <div class="form-check">
+                                    <input name="timeFormat" value="%H:%M" type="radio" class="form-check-input" id="timeFormat--H_M" {{ 'checked' if settings['timeFormat'].value == '%H:%M' else '' }}>
+                                    <label for="timeFormat--H_M" class="form-check-label">23:41</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="timeFormat" value="%I:%M %p" type="radio" class="form-check-input" id="timeFormat--I_M_P" {{ 'checked' if settings['timeFormat'].value == '%I:%M %p' else '' }}>
+                                    <label for="timeFormat--b_d_Y" class="form-check-label">11:41 pm</label>
+                                </div>
+                                <STRONG>Preview:</STRONG> 11:41 pm
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-9">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ super() }}
+    <script>
+        console.log('Settings.general page')
+    </script>
+{% endblock %}

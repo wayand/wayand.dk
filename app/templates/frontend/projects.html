@@ -1,0 +1,17 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+    <div class="archive">
+
+        <ul class="project-list">
+            <li class="project-item">
+                <a href="https://invoicer.wayand.dk">Invoicer</a>: 
+                <p>
+                    The Invoicer project is a cutting-edge invoicing application that combines the power of Python (Flask, Flask-SQLAlchemy, and Flask-Marshmallow) with the elegance of Vue.js 3 and its Composition API. The project was designed to provide a practical and educational experience, with a goal of learning Python Flask and Vue.js 3.
+                </p>
+                <br><br>
+                <img alt="invoicer" src="{{ url_for('static', filename='frontend/images/projects/invoicer.png') }}">
+            </li>
+        </ul>
+    </div>
+{% endblock %}

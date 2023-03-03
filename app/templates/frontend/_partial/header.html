@@ -1,0 +1,20 @@
+<header id="header">
+    <a href="{{ url_for('main.index') }}">
+        <div id="logo" style="background-image: url(/static/frontend/images/logo.png);"></div>
+        <div id="title">
+            <h1>Wayand Bahramzy</h1>
+        </div>
+    </a>
+    <div id="nav">
+        <!-- Start Header Menu -->
+        <ul>
+            <li class="icon">
+                <a href="#"><i class="fas fa-bars fa-2x"></i></a>
+            </li>
+            <li><a href="{{url_for('main.index')}}">Home</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="{{url_for('blog.posts')}}">Writing</a></li>
+        </ul>
+        <!-- End Header Menu -->
+    </div>
+</header>

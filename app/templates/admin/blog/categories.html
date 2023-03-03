@@ -1,0 +1,312 @@
+{% extends 'admin/base.html' %}
+
+{% block app_content %}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('admin.dashboard') }}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ page.h1 }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">Categories</h2>
+            <p class="mb-0">Overview of all categories</p>
+        </div>
+    </div>
+    
+    <div class="table-settings mb-4">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-12 col-lg-12 d-flex justify-content-end">
+                <div class="input-group fmxw-300">
+                    <span class="input-group-text">
+                        <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                        </svg> 
+                    </span>
+                    <input id="searchBtn" type="text" value="{{request.args.get('q')}}" class="form-control" placeholder="Search categories">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'admin/components/form_errors.html' %}
+
+    <div class="row">
+        <div class="col-12 col-sm-4">
+            <form id="FormCreateCategory" method="POST" action="{{url_for('admin.categories')}}">
+                <div class="card card-body border-0 shadow mb-4">
+                    {# remember som hidden fields here for security etc. #}
+                    {{ form.csrf_token }}
+                
+                    <div class="col-12">
+                        <div class="mb-4">
+                            {{ form.name.label }}
+                            {{ form.name(class="form-control") }}
+                            <small>
+                                The name is how it appears on your site.
+                            </small>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.slug.label }}
+                            {{ form.slug(class="form-control") }}
+                            <small>
+                                The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only
+                                letters, numbers,
+                                and hyphens.
+                            </small>
+                        </div>
+                        <div class="mb-4">
+                            {{ form.parent_category.label }}
+                            {{ form.parent_category(class="form-control") }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form.description.label }}
+                            {{ form.description(size=10, rows=10, class="form-control") }}
+                        </div>
+                        <div class="mt-4">
+                            {{ form.submit(class="btn btn-gray-800 mt-2 animate-up-2") }}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 col-sm-8">
+            <div class="card card-body shadow border-0 table-wrapper table-responsive">
+                <div class="d-flex mb-3">
+                    <select id="bulk-option" class="form-select fmxw-200" aria-label="Message select example">
+                        <option selected="selected" value="-1">Bulk Action</option>
+                        <option value="delete">Delete</option>
+                    </select> 
+                    <button id="bulk-apply-btn" class="btn btn-sm px-3 btn-secondary ms-3">Apply</button>
+                </div>
+                <table class="table user-table table-hover align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="border-bottom">
+                                <div class="form-check dashboard-check">
+                                    <input class="form-check-input" type="checkbox" id="all-chechboxes"> 
+                                    <label class="form-check-label" for="userCheck55"></label>
+                                </div>
+                            </th>
+                            <th class="border-bottom">Name</th>
+                            <th class="border-bottom">Description</th>
+                            <th class="border-bottom">Slug</th>
+                            <th class="border-bottom">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for cat in categories %}
+                        <tr>
+                            <td>
+                                <div class="form-check dashboard-check">
+                                    <input class="form-check-input" type="checkbox" value="{{cat.id}}" id="cat-{{cat.id}}"> 
+                                    <label class="form-check-label" for="userCheck5"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <a href="#" class="d-flex align-items-center">
+                                    <div class="d-block">
+                                        <span class="fw-bold">{{cat.name}}</span>
+                                    </div>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="fw-normal d-flex align-items-center">
+                                    {{cat.description if cat.description else '--'}}
+                                </span>
+                            </td>
+                            <td><span class="fw-normal text-purple">{{cat.slug}}</span></td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                        </svg> 
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
+                                        <a data-category-id="{{cat.id}}" class="dropdown-item d-flex align-items-center" href="{{ url_for("admin.edit_category", id=cat.id) }}">
+                                            <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                            </svg> Edit 
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                            </svg> View Details 
+                                        </a>
+                                        <a data-category-id="{{cat.id}}" class="cat--remove-btn dropdown-item d-flex align-items-center" href="javascript:void(0)">
+                                            <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                            </svg> Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+                    <div class="fw-normal small mt-4 mt-lg-0">Showing <b>{{categories|length}}</b> items</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+    "use strict"
+
+    var CategoryUIController = (() => { 
+        const DOMstrings = {
+            searchBtn: '#searchBtn',
+            bulkOption: '#bulk-option',
+            bulkApplyBtn: '#bulk-apply-btn',
+            catRemoveBtns: '.cat--remove-btn',
+            allChechboxes: '#all-chechboxes',
+            formCreateCategory: '#FormCreateCategory'
+        }
+
+        return {
+            getDOMstrings: () => DOMstrings,
+            getAllCategories: () => [...document.querySelectorAll('input[id^="cat-"]')],
+            getSelectedCategories: () => [...document.querySelectorAll('input[id^="cat-"]:checked')]
+        }
+    })();
+
+    var CategoryController = ((catUICtrl) => {
+        const setupEventListeners = () => {
+            const DOM = catUICtrl.getDOMstrings()
+            const catRemoveBtns = [...document.querySelectorAll(DOM.catRemoveBtns)]
+            catRemoveBtns.forEach((catRemove) => {
+                catRemove.addEventListener('click', (e) => {
+                    const cateArr = catUICtrl.getAllCategories().filter((cat) => cat.value===e.currentTarget.dataset.categoryId) 
+                    deleteSelectedCats(cateArr)
+                })
+            })
+            
+            document.querySelector(DOM.bulkApplyBtn).addEventListener('click', bulkHandler)
+            document.querySelector(DOM.allChechboxes).addEventListener('click', catCheckboxToggler)
+            document.querySelector(DOM.formCreateCategory).addEventListener('submit', createCategoryFormHandler)
+
+            document.querySelector(DOM.searchBtn).addEventListener('keypress', searchHandler)
+        }
+
+        const searchHandler = (e) => {
+            if (e.key === 'Enter') {
+                window.location = "{{url_for('admin.categories')}}?q=" + e.target.value
+            }
+        }
+
+        const createCategoryFormHandler = (e) => {
+            console.log('createCategoryFormHandler ...', e.target.elements['name'].value)
+
+            const name = e.target.elements['name']
+            const slug = e.target.elements['slug']
+            const parent_category = e.target.elements['parent_category']
+            const description = e.target.elements['description']
+
+            name.classList.remove('is-invalid')
+            if (name.value.trim() === '') {
+                name.classList.add('is-invalid')
+                name.parentNode.querySelector(".invalid-feedback").innerText = "Required Field!"
+                e.preventDefault();
+                return
+            }
+            
+        }
+
+        const bulkHandler = (e) => {
+            console.log('bulkHandler.....clicked')
+            const DOM = catUICtrl.getDOMstrings()
+            const selectedCats = catUICtrl.getSelectedCategories()
+            const bulkOption = document.querySelector(DOM.bulkOption)
+            console.log('counts: ', selectedCats.length)
+            console.log('selectedCats', selectedCats)
+
+            if (bulkOption.value === '-1') {
+                console.log('bulkOption.value', bulkOption.value)
+                return;
+            }
+            if (selectedCats.length < 1) {
+                Swal.fire({
+                    title: 'No Category selected',
+                    text: 'Please select some categories to use bulk action!'
+                })
+                return;
+            }
+            switch(bulkOption.value) {
+                case 'delete': deleteSelectedCats(selectedCats); break;
+            }
+        }
+
+        const deleteSelectedCats = (selectedCats) => {
+            Swal.fire({
+                title: 'Are you sure, you want to delete selected categories permanently?',
+                text: 'You will then not be able to restore them again!!',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete'
+            })
+            .then((res) => {
+                if (res.isConfirmed) {
+                    const ids = selectedCats.map((cat) => cat.value)
+                    fetch('{{url_for("apiv1.category_delete")}}', {
+                        method: 'DELETE',
+                        body: JSON.stringify({
+                            ids: ids
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json; charset=UTF-8',
+                        }
+                    })
+                    .then((response) => { status = response.status; return response.json() })
+                    .then((json) => {
+                        console.log('json::::', status)
+                        if ('200' === status) {
+                            location.reload()
+                        } else {
+                            console.log('Something went wrong: ', json)
+                        }
+                    })
+
+                } else {
+                    console.log('delete cancelled!!')
+                }
+            })
+        }
+        const catCheckboxToggler = (e) => {
+            catUICtrl.getAllCategories().forEach((cat) => {
+                if (e.target.checked) {
+                    cat.checked = true
+                } else {
+                    cat.checked = false
+                }
+            })
+        }
+
+        return {
+            init: () => {
+                console.log('Application has started');
+                setupEventListeners()
+            }
+        }
+    })(CategoryUIController);
+
+    CategoryController.init();
+</script>
+{% endblock %}

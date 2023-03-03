@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'frontend/_partial/head.html' %}
+    <body class="max-width mx-auto px3 ltr">
+        {% if post %}
+            {% include 'frontend/_partial/actions_desktop.html' %}
+        {% endif %}
+        <div class="content index py4">
+            {% if not post %}
+                {% include 'frontend/_partial/header.html' %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+            {% if true %}
+                {% include 'frontend/_partial/actions_mobile.html' %}
+            {% endif %}
+
+            {% include 'frontend/_partial/footer.html' %}
+        </div>
+        {% block script %}
+            <link rel="stylesheet" href="{{ url_for('static', filename='frontend/css/lib/justified-gallery/css/justifiedGallery.min.css') }}" />
+            <link rel="stylesheet" href="{{ url_for('static', filename='frontend/css/lib/font-awesome/css/all.min.css') }}" />
+            
+            <!-- jquery -->
+            <script src="{{ url_for('static', filename='frontend/js/lib/jquery/jquery.min.js') }}"></script>
+            <script src="{{ url_for('static', filename='frontend/js/lib/justified-gallery/js/jquery.justifiedGallery.min.js') }}"></script>
+
+            <!-- Main JS -->
+            <script src="{{url_for('static', filename='frontend/js/main.js')}}"></script>
+        {% endblock %}
+    </body>
+</html>

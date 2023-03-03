@@ -1,0 +1,26 @@
+
+<!-- Start Blog List  Single Item-->
+<div class="blog-list-single-item">
+    <div class="inner-shape inner-shape-top-right"></div>
+    <a href="{{ url_for('blog.get_post_by_slug', slug=post.slug) }}" class="image">
+        <img src="{{ post.featured_image_path if post.feature_image else 'https://via.placeholder.com/180?text=Wayand.dk/blog' }}" alt="{{ post.title }}">
+    </a>
+    <div class="content">
+        <div class="post-meta-1">
+
+            {% for category in post.categories %}
+                <a href="#" class="catagory">{{ category.name }}</a>
+            {% endfor %}
+
+            <a href="#" class="date">{{ post.published_at.strftime(general_setting['dateFormat'].value) if post.published_at else '_' }}</a>
+        </div>
+        <h4 class="title"><a href="{{ url_for('blog.get_post_by_slug', slug=post.slug) }}">{{ post.title }}</a></h4>
+
+        <div class="post-meta-2">
+            <a href="#" class="icon-space-right"><i class="icofont-ui-user"></i>{{ post.author.fullname }}</a>
+            <a href="#" class="icon-space-right"><i class="icofont-heart"></i>5,678</a>
+            <a href="#" class="icon-space-right"><i class="icofont-speech-comments"></i>{{ post.comments|length }}</a>
+        </div>
+    </div>
+</div>
+<!-- End Blog List  Single Item-->

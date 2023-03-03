@@ -1,0 +1,10 @@
+<li class="post-item">
+    <div class="meta">
+        <time datetime="{{ post.published_at }}" itemprop="datePublished">
+            {{ post.published_at.strftime(general_setting['dateFormat'].value) if post.published_at else '_' }}
+        </time>
+    </div>
+    <span>
+        <a class="" href="{{ url_for('blog.get_post_by_slug', slug=post.slug) }}">{{ post.title }}</a>
+    </span>
+</li>

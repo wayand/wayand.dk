@@ -1,0 +1,5 @@
+{% macro join_object_list(list, separator) -%}
+    {% for tag in list -%}
+        {{ tag.name }}{{ separator if not loop.last }}
+    {%- endfor %}
+{%- endmacro %}

@@ -1,0 +1,44 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+    <section id="about">
+        <span class="h1">About me</span>
+        <p>
+            {{ me.bio|safe }}
+        </p>
+        <p>
+            Find me on
+            <a class="icon" target="_blank" rel="noopener" href="{{ 'https://github.com/' + me.social_github }}">
+                <i class="fab fa-github"></i><!-----></a><!-----><!-- --->,
+            <a class="icon" target="_blank" rel="noopener" href="{{ 'https://twitter.com/' + me.social_twitter }}">
+                <i class="fab fa-twitter"></i><!-- ---></a><!-- ---><!-- --->,
+            <a class="icon" target="_blank" rel="noopener" href="{{ 'https://www.facebook.com/' + me.social_facebook }}">
+                <i class="fab fa-facebook"></i><!-----></a><!-----><!----->,
+            <a class="icon" target="_blank" rel="noopener" href="{{ 'https://www.linkedin.com/in/' + me.social_linkedin }}">
+                <i class="fab fa-linkedin"></i><!-- ---></a><!-----><!-----> and
+            <a class="icon" target="_blank" rel="noopener" href="mailto:name@email.com">
+                <i class="fas fa-envelope"></i><!-----></a><!-----><!----->.
+        </p>
+    </section>
+    <section id="writing">
+        <span class="h1"><a href="{{ url_for('blog.posts') }}">Writing</a></span>
+        <ul class="post-list">
+            {% for post in posts %}
+            {% include 'frontend/blog/_post.html' %}
+            {% endfor %}
+        </ul>
+    </section>
+    <section id="projects">
+        <span class="h1"><a href="http://github.com/probberechts">Projects</a></span>
+        <ul class="project-list">
+            <li class="project-item">
+                <a href="https://invoicer.wayand.dk">Invoicer</a>: 
+                <p>
+                    The Invoicer project is a cutting-edge invoicing application that combines the power of Python (Flask, Flask-SQLAlchemy, and Flask-Marshmallow) with the elegance of Vue.js 3 and its Composition API. The project was designed to provide a practical and educational experience, with a goal of learning Python Flask and Vue.js 3.
+                </p>
+                <br><br>
+                <img alt="invoicer" src="{{ url_for('static', filename='frontend/images/projects/invoicer.png') }}">
+            </li>
+        </ul>
+    </section>
+{% endblock %}

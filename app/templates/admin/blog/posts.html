@@ -1,0 +1,391 @@
+{% extends 'admin/base.html' %}
+
+{% block app_content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('admin.dashboard') }}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ page.h1 }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">{{ page.h1 }}</h2>
+            <p class="mb-0">Overview of all blog posts.</p>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('admin.create_post') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
+                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                New Post
+            </a>
+        </div>
+    </div>
+
+    <div class="table-settings mb-4">
+        <div class="row align-items-center">
+            <div class="col-4 col-md-3">
+                <div class="input-group me-2 me-lg-3 fmxw-400">
+                    <span class="input-group-text">
+                        <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="search-for-post-q" class="form-control" placeholder="Search posts">
+                </div>
+                <script>
+                    document.querySelector('#search-for-post-q').addEventListener('keypress', (e) => {                                
+                        if (e.key === 'Enter') {
+                            window.location.href = '/admin/posts?q=' + e.target.value
+                        }
+                    })
+                </script>
+            </div>
+            <div class="col-6">
+                <div class="btn-group ms-lg-3">
+                    <a href="{{ url_for('admin.posts', filter='publish') }}" type="button" class="{{'active ' if request.args.get('filter') == 'publish' else ''}}btn btn-sm btn-outline-gray-600 text-nowrap">Published <span class="badge bg-primary">{{ post_count_by_status['publish'] }}</span></a>
+                    <a href="{{ url_for('admin.posts', filter='draft') }}" type="button" class="{{'active ' if request.args.get('filter') == 'draft' else ''}}btn btn-sm btn-outline-gray-600 text-nowrap">Draft <span class="badge bg-primary">{{ post_count_by_status['draft'] if post_count_by_status['draft'] else 0 }}</span></a>
+                    <a href="{{ url_for('admin.posts', filter='trash') }}" type="button" class="{{'active ' if request.args.get('filter') == 'trash' else ''}}btn btn-sm btn-outline-gray-600 text-nowrap">Trash <span class="badge bg-primary">{{ post_count_by_status['trash'] if post_count_by_status['trash'] else 0 }}</span></a>
+                    <a href="{{ url_for('admin.posts') }}" type="button" class="{{'active ' if request.args.get('filter') not in ['publish', 'draft', 'trash']}}btn btn-sm btn-outline-gray-600 text-nowrap">All <span class="badge bg-primary">{{ posts.total }}</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-settings mb-3">
+        <div class="row align-items-center justify-content-between">
+            <div class="d-flex col-6">
+                <select id="bulk-option" class="form-select fmxw-200" aria-label="Message select example">
+                    <option selected="selected" value="-1">Bulk Action</option>
+                    {% if request.args.get('filter') == 'trash' %}
+                    <option value="restore">Restore</option>
+                    <option value="delete">Delete</option>
+                    {% else %}
+                    <option value="trash">Move to trash</option>
+                    {% endif %}
+                </select> 
+                <button type="button" id="bulk-apply-btn" class="btn btn-sm px-3 btn-secondary ms-3">Apply</button>
+            </div>
+            <div class="col-1 ps-md-0 text-end">
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-1" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-xs dropdown-menu-end pb-0">
+                        <span class="small ps-3 fw-bold text-dark">Show</span>
+                        <a class="dropdown-item d-flex align-items-center fw-bold"
+                            href="{{ url_for('admin.posts', per_page=10) }}">10
+                            {% if request.args.get('per_page') == '10' %}
+                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            {% endif %}
+                        </a>
+                        <a class="dropdown-item fw-bold" href="{{ url_for('admin.posts', per_page=20) }}">20
+                            {% if request.args.get('per_page') == '20' %}
+                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            {% endif %}
+                        </a>
+                        <a class="dropdown-item fw-bold rounded-bottom" href="{{ url_for('admin.posts', per_page=30) }}">30
+                            {% if request.args.get('per_page') == '30' %}
+                            <svg class="icon icon-xxs ms-auto" fill="currentColor" viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            {% endif %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-body border-0 shadow table-wrapper table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="border-gray-200"><input class="form-check-input" type="checkbox" id="all-chechboxes"></th>
+                    <th class="border-gray-200">Title</th>
+                    <th class="border-gray-200">Author</th>
+                    <th class="border-gray-200">Categories</th>
+                    <th class="border-gray-200">Tags</th>
+                    <th class="border-gray-200">Date</th>{# show updated date if exists else show created date #}
+                    <th class="border-gray-200">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Item -->
+                {% from "macros/_helpers.html" import join_object_list %}
+                {% for post in posts.items %}
+                <tr>
+                    <td>
+                        <input class="form-check-input" type="checkbox" id="post-{{post.id}}" value="{{post.id}}">
+                    </td>
+                    <td>
+                        <span class="fw-normal">{{ post.title }}</span>
+                    </td>
+                    <td><span class="fw-normal">{{ post.author.first_name }}</span></td>                        
+                    <td><span class="fw-bold small">{{ join_object_list(post.categories, ', ') }}</span></td>
+                    <td><span class="fw-bold small">{{ join_object_list(post.tags, ', ') }}</span></td>
+                    <td><div class="fw-normal small">
+                        {% if post.published_at %}
+                            published<br>
+                            {{ post.published_at.strftime('%a, %B %d %Y') }}
+                        {% elif post.updated_at %} 
+                            Last Modified<br>
+                            {{ post.updated_at.strftime('%a, %B %d %Y') }}
+                        {% else %}
+                            created<br>
+                            {{ post.created_at.strftime('%a, %B %d %Y') }}
+                        {% endif %}
+                    </div></td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="icon icon-sm">
+                                    <span class="fas fa-ellipsis-h icon-dark"></span>
+                                </span>
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu py-0">
+                                <a class="dropdown-item rounded-top" target="_blank" href="{{url_for('blog.get_post_by_slug', slug=post.slug)}}"><span class="fas fa-eye me-2"></span>View</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.edit_post', id=post.id) }}"><span class="fas fa-edit me-2"></span>Edit</a>
+                                <a class="dropdown-item text-danger rounded-bottom" data-post-id="{{post.id}}" href="javascript:void(0)"><span class="fas fa-trash-alt me-2"></span>Remove</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination mb-0">
+                    <li class="page-item">
+                        <a class="page-link" href="{{ prev_url or '#' }}">Newer</a>
+                    </li>
+
+                    {% for page in posts.iter_pages(left_edge=3, right_edge=3) %}
+                    {% if page %}
+
+                    <li class="page-item {{ 'active' if request.args.get('page')|int == page }}">
+                        <a class="page-link" href="{{ url_for('admin.posts', page=page, per_page=request.args.get('per_page')) }}">{{ page }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">...</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    <li class="page-item">
+                        <a class="page-link" href="{{ next_url or '#' }}">Older</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="fw-normal small mt-4 mt-lg-0">Showing <b>{{ posts.items|length }}</b> out of <b>{{ posts.total }}</b> entries</div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+
+<script>
+    const allPosts = document.querySelectorAll('input[id^="post-"]')
+    const bulkOption = document.querySelector('#bulk-option')
+    document.querySelector('#bulk-apply-btn').addEventListener('click', () => {
+        const selectedPosts = [...document.querySelectorAll('input[id^="post-"]:checked')]
+        //console.log(selectedPosts, bulkOption.value)
+        if (bulkOption.value === '-1') {
+            console.log('bulkOption.value', bulkOption.value)
+            return;
+        }
+        if (selectedPosts.length < 1) {
+            Swal.fire({
+                title: 'No post selected',
+                text: 'Please select some post to use bulk action!'
+            })
+            return;
+        }
+        switch(bulkOption.value) {
+            case 'delete':
+                Swal.fire({
+                    title: 'Are you sure, you want to delete selected posts permanently?',
+                    text: 'You will then not be able to restore them again!!',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete'
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        const ids = selectedPosts.map((post) => post.value)
+                        fetch('{{url_for("apiv1.post_bulk_delete")}}', {
+                            method: 'DELETE',
+                            body: JSON.stringify({
+                                ids: ids
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                        })
+                        .then((response) => {status = response.status; return response.json()})
+                        .then((json) => {
+                            console.log('json::::', status)
+                            if ('200' === status) {
+                                console.log('successfully deleted, now update the dom!!!!')
+                                selectedPosts.forEach((post) => post.closest('tr').remove())
+                                location.reload()
+                            } else {
+                                console.log('Something went wrong: ', json)
+                            }
+                        })
+
+                    } else {
+                        console.log('delete cancelled!!')
+                    }
+                })
+                break;
+            case 'restore':
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You want to move selected posts to trash?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, move'
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                const ids = selectedPosts.map((post) => post.value)
+                                fetch('{{url_for("apiv1.post_bulk_restore")}}', {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        ids: ids
+                                    }),
+                                    headers: {
+                                        'Content-Type': 'application/json; charset=UTF-8',
+                                    },
+                                })
+                                .then((response) => {status = response.status; return response.json()})
+                                .then((json) => {
+                                    console.log('json::::', status)
+                                    if ('200' === status) {
+                                        console.log('successfully restore, now update the dom!!!!')
+                                        selectedPosts.forEach((post) => post.closest('tr').remove())
+                                        location.reload()
+                                    } else {
+                                        console.log('Something went wrong: ', json)
+                                    }
+                                })
+                            } else {
+                                console.log('restore cancelled!!')
+                            }
+                        })
+                break;
+            case 'trash':
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You want to move selected posts to trash?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, move'
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {                                
+                                const ids = selectedPosts.map((post) => post.value )
+                                fetch('{{url_for("apiv1.post_bulk_trash")}}', {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        ids: ids
+                                    }),
+                                    headers: {
+                                        'Content-Type': 'application/json; charset=UTF-8',
+                                    },
+                                })
+                                .then((response) => {status = response.status; return response.json()})
+                                .then((json) => {
+                                    if ('200' === status) {
+                                        console.log('successfully trashed, now update the dom!!!!')
+                                        location.reload()
+                                    } else {
+                                        console.log('Something went wrong: ', json)
+                                    }
+                                })
+                            } else {
+                                console.log('cancelled!!')
+                            }
+                        })
+                        break;
+        }
+        
+    })
+
+    document.querySelectorAll('a[data-post-id]').forEach((post) => {
+        post.addEventListener('click', (e) => {
+            console.log('deleting post with dataset id:', e.target.dataset.postId)
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to permanently delete these posts. This action cannot be undone. 'Cancel' to stop, 'Yes' to delete.",
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete'
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/apiv1/posts/' + e.target.dataset.postId, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json; charset=UTF-8',
+                            },
+                        })
+                        .then((response) => {status = response.status; return response.json()})
+                        .then((json) => {
+                            console.log('json::::', status)
+                            if ('200' === status) {
+                                console.log('successfully deleted post with id:'+e.target.dataset.postId)
+                                location.reload()
+                            } else {
+                                console.log('Something went wrong: ', json)
+                            }
+                        })
+                } else {
+                    console.log('cancelled deleting post id:', e.target.dataset.postId)
+                }
+            })
+        })
+    })
+
+    // toggle all checkboxes
+    document.querySelector('#all-chechboxes').addEventListener('click', (e) => {
+        allPosts.forEach((post) => {
+            if (e.target.checked) {
+                post.checked = true
+            } else {
+                post.checked = false
+            }
+        })
+    })
+</script>
+
+{% endblock %}

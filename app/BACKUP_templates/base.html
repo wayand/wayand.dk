@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Wayand.dk</title>
+        <meta name="description" content="">
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='images/favicon.ico')}}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{url_for('static', filename='images/apple-touch-icon.png')}}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{url_for('static', filename='images/favicon-32x32.png')}}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='images/favicon-16x16.png')}}">
+        <link rel="manifest" href="{{url_for('static', filename='images/site.webmanifest')}}">
+
+        <!-- CSS ============================================ -->
+
+        <!-- Vendor CSS (Contain Bootstrap, Icon Fonts) -->
+        <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/bootstrap.min.css')}}" />
+        <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/icofont.min.css')}}" />
+
+    
+        <!-- Minify Version -->
+        <!-- <link rel="stylesheet" href="assets/css/vendor/vendor.min.css">
+        <link rel="stylesheet" href="assets/css/plugins/plugins.min.css">
+        <link rel="stylesheet" href="assets/css/style.min.css"> -->
+
+
+        <!-- Plugin CSS (Global Plugins Files) -->
+        <link rel="stylesheet" href="{{url_for('static', filename='css/plugins/animate.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/plugins/swiper-bundle.min.css')}}">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/plugins/venobox.min.css')}}" />
+
+        {% block head %}{% endblock %}
+        <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    </head>
+
+    <body>
+        <main class="main-wrapper">
+
+            {% block header %}
+                {% include '_header.html' %}
+            {% endblock %}
+
+            {% block content %}{% endblock %}
+
+            {% block footer %}
+                {% include '_footer.html' %}
+            {% endblock %}
+
+            <!-- material-scrolltop button -->
+            <button class="material-scrolltop" type="button"></button>
+        </main>
+
+        {% block script %}
+
+            <!-- Vendor JS -->
+            <script src="{{url_for('static', filename='js/vendor/modernizr-3.11.2.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/vendor/jquery-3.6.0.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/vendor/jquery-migrate-3.3.2.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/vendor/bootstrap.bundle.min.js')}}"></script>
+
+
+            <!--Plugins JS-->
+            <script src="{{url_for('static', filename='js/plugins/swiper-bundle.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/jquery.appear.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/venobox.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/jquery.waypoints.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/images-loaded.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/isotope.pkgd.min.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/counter.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/ajax-mail.js')}}"></script>
+            <script src="{{url_for('static', filename='js/plugins/material-scrolltop.js')}}"></script>
+
+            <!-- Main JS Initialization File -->
+            <script src="{{url_for('static', filename='js/main.js')}}"></script>
+        {% endblock %}
+    </body>
+</html>

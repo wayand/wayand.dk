@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ...::: Start Breadcrumb Section :::... -->
+<div class="breadcrumb-section section-bg overflow-hidden pos-relative">
+    <div class="breadcrumb-shape-top-left"></div>
+    <div class="breadcrumb-shape-bottom-right"></div>
+    <div class="breadcrumb-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-content">
+                        <h2 class="title">Blog List</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ...::: End Breadcrumb Section :::... -->
+
+    <!-- ...::: Start Blog List Section :::... -->
+    <div class="blog-list-section section-mt-165">
+        <div class="blog-list-box">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <!--  Start Blog List  -->
+                        <div class="blog-list">
+                            {% for post in posts.items %}
+                                {% include 'blog/_post.html' %}
+                            {% endfor %}
+                        </div>
+                        <!--  End Blog List   -->
+
+                        <div class="d-flex justify-content-center justify-content-lg-start">
+                            <!--  Start Pagination  -->
+                            <div class="pagination">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <ul class="pagination-nav-list">
+                                            <li class="prev"><a href="{{ prev_url or '#' }}"><i class="icofont-double-left"></i></a></li>
+
+                                            {% for page in posts.iter_pages(left_edge=3, right_edge=3) %}
+                                            {% if page %}
+
+                                            <li class="{{ 'active' if request.args.get('page')|int == page }}">
+                                                <a href="{{ url_for('blog.posts', page=page) }}">{{ page }}</a>
+                                            </li>
+
+                                            {% else %}
+                                            <li><a href="#">...</a></li>
+
+                                            {% endif %}
+                                            {% endfor %}
+
+                                            <li class="next"><a href="{{ next_url or '#' }}"><i class="icofont-double-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--  Start Pagination  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ...::: End Blog List Section :::... -->
+
+{% endblock %}

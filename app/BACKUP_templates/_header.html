@@ -1,0 +1,86 @@
+
+        <!-- .....:::::: Start Header Section :::::.... -->
+        <header class="header-section sticky-header d-none d-lg-block">
+            <div class="header-wrapper">
+                <div class="container">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col">
+                            <!-- Start Header Logo -->
+                            <a href="{{url_for('main.index')}}" class="header-logo">
+                                <h3 style="font-family: 'Poppins', sans-serif;">WB</h3>
+                            </a>
+                            <!-- End Header Logo -->
+                        </div>
+                        <div class="col-auto">
+                            <!-- Start Header Menu -->
+                            <ul class="header-nav">
+                                <li><a href="{{url_for('main.index')}}">Home</a></li>
+                                <li><a href="/projects">Projects</a></li>
+                                <li><a href="{{url_for('blog.posts')}}">Blog</a></li>
+                                <li><a href="/about">about</a></li>
+                                <li><a href="/contact">Contact</a></li>
+                            </ul>
+                            <!-- End Header Menu -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- .....:::::: End Header Section :::::.... -->
+
+        <!-- .....:::::: Start Mobile Header Section :::::.... -->
+        <div class="mobile-header d-block d-lg-none">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col">
+                        <div class="mobile-logo">
+                            <h3 style="font-family: 'Poppins', sans-serif;">WB</h3>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mobile-action-link text-end">
+                            <a href="#mobile-menu-offcanvas" class="offcanvas-toggle offside-menu"><i class="icofont-navigation-menu"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- .....:::::: Start MobileHeader Section :::::.... -->
+
+        <!--  Start Offcanvas Mobile Menu Section -->
+        <div id="mobile-menu-offcanvas" class="offcanvas offcanvas-rightside offcanvas-mobile-menu-section">
+            <!-- Start Offcanvas Header -->
+            <div class="offcanvas-header text-end">
+                <button class="offcanvas-close"><i class="icofont-close-line"></i></button>
+            </div> <!-- End Offcanvas Header -->
+            <!-- Start Offcanvas Mobile Menu Wrapper -->
+            <div class="offcanvas-mobile-menu-wrapper">
+                <!-- Start Mobile Menu  -->
+                <div class="mobile-menu-bottom">
+                    <!-- Start Mobile Menu Nav -->
+                    <div class="offcanvas-menu">
+                        <ul>
+                            <li><a href="{{url_for('main.index')}}"><span>Home</span></a></li>
+                            <li><a href="/projects"><span>Projects</span></a></li>
+                            <li><a href="{{url_for('blog.posts')}}"><span>Blog</span></a></li>
+                            <li><a href="/about"><span>about</span></a></li>
+                            <li><a href="/contact"><span>Contact</span></a></li>
+                        </ul>
+                    </div> <!-- End Mobile Menu Nav -->
+                </div> <!-- End Mobile Menu -->
+
+                <!-- Start Mobile contact Info -->
+                <div class="mobile-contact-info text-center">
+                    <ul class="social-link">
+                        <li><a target="_blank" href="https://twitter.com/wayandkhan"><i class="icofont-twitter"></i></a></li>
+                        <li><a target="_blank" href="https://www.linkedin.com/in/wayand-bahramzy-6864717a/"><i class="icofont-linkedin"></i></a></li>
+                    </ul>
+                </div>
+                <!-- End Mobile contact Info -->
+
+            </div> <!-- End Offcanvas Mobile Menu Wrapper -->
+        </div>
+        <!-- ...:::: End Offcanvas Mobile Menu Section:::... -->
+
+        <!-- Offcanvas Overlay -->
+        <div class="offcanvas-overlay"></div>

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <!-- ...::: Start Hero Section :::... -->
+    <div class="hero-section section-dark-blue-bg">
+        <div class="hero-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xxl-7">
+                        <div class="hero-content">
+                            <h3 class="title-big">Hello! I’m Wayand</h3>
+                            <h2 class="title-large">I build<span class="shape-mark">Websites</span></h2>
+                            <p>Full-stack Developer.</p>
+
+                            <a href="#" class="btn btn-xl btn-outline-one icon-space-left">Get Resume <i class="icofont-download"></i></a>
+
+                            <div class="invisible video-link">
+                                <a class="wave-btn" href="https://youtu.be/MKjhBO2xQzg" data-autoplay="true" data-vbtype="video">
+                                    <div class="ripple"><i class="icofont-ui-play"></i></div>
+                                </a>
+
+                                <span class="video-text"> Watch Video</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-shape hero-top-shape">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="hero-shape hero-bottom-shape">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="hero-portrait">
+                <div class="image">
+                    <img class="img-fluid" src="{{url_for('static', filename='images/portrait/portrait-hero.png')}}" alt="">
+
+                    <div class="image-half-round-shape"></div>
+                    <div class="social-link">
+                        <a href="https://github.com/wayand" target="_blank"><i class="icofont-github"></i></a>
+                        <a href="https://www.linkedin.com/in/wayand-bahramzy-6864717a/" target="_blank"><i class="icofont-linkedin"></i></a>
+                        <a href="https://twitter.com/wayandkhan" target="_blank"><i class="icofont-twitter"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ...::: End Hero Section :::... -->
+
+    <!-- ...::: Start Blog Feed Display Section :::... -->
+    <div class="blog-feed-display-section section-gap-tb-165">
+        <div class="blog-feed-display-box">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <!-- Start Section Content -->
+                        <div class="section-content pos-relative text-center">
+                            <h2 class="section-title">Featured Posts</h2>
+                        </div>
+                        <!-- End Section Content -->
+                    </div>
+                </div>
+
+                <div class="blog-feed-display-wrapper">
+                    <div class="row mb-n5">
+                        <div class="col-12 mb-5">
+
+                        {% for post in posts %}
+                            <!-- Start Blog Feed Single Item -->
+                            <div class="blog-feed-single-item">
+                                <div class="inner-shape inner-shape-top-right"></div>
+                                <a href="{{ post.slug }}" class="image">
+                                    <img src="assets/images/blog/blog-feed-img-1.jpg" alt="">
+                                </a>
+                                <div class="content-box">
+                                    <div class="content">
+                                        <div class="post-meta">
+                                            {% for category in post.categories %}
+                                                <a href="#" class="catagory">{{ category.name }}</a>
+                                            {% endfor %}
+                                            <a href="#" class="date">{{ post.published_at.strftime('%b %d, %Y') if post.published_at else '_' }}</a>
+                                        </div>
+                                        <h4 class="title">
+                                            <a href="{{ url_for('blog.get_post_by_slug', slug=post.slug) }}">{{ post.title }}</a>
+                                        </h4>
+                                    </div>
+                                    <a href="{{ url_for('blog.get_post_by_slug', slug=post.slug) }}" class="btn btn-md btn-outline-one icon-space-left">Read More<i class="icofont-double-right"></i></a>
+                                </div>
+
+                            </div>
+                            <!-- End Blog Feed Single Item -->
+                        {% endfor %}
+                        </div>
+
+                        <p class="featuredposts__footer">
+                            <a href="/blog" class="featuredposts__see-all">See All Posts
+                                <svg class="icon icon--arrow-right" role="img" aria-hidden="true" width="24" height="24">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons/icons.sprite.svg#icon-arrow-right"></use>
+                                </svg>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ...::: End Blog Feed Display Section :::... -->
+
+{% endblock %}

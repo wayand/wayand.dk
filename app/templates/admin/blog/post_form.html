@@ -1,0 +1,391 @@
+{% extends 'admin/base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/vendor/prism.css')}}">
+    <script src="{{ url_for('static', filename='js/vendor/prism.js') }}" data-manual></script>
+{% endblock %}
+
+{% block app_content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('admin.dashboard') }}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ page.h1 }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">{{ page.h1 }}</h2>
+            <p class="mb-0"></p>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group ms-2 ms-lg-3">
+                <button type="submit" form="FormCreatePost" value="publish" class="btn btn-sm btn-primary">Publish</button>
+                <button type="submit" form="FormCreatePost" value="draft" class="btn btn-sm btn-outline-gray-600">Save draft</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% for field, errors in form.errors.items() %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span class="fas fa-bullhorn me-1"></span>
+            <strong>{{ form[field].label }}:</strong> {{ ', '.join(errors) }}
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <form id="FormCreatePost" method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-12 col-xl-9">
+                <div class="card card-body border-0 shadow mb-4">
+
+                        {# remember som hidden fields here for security etc. #}
+                        {{ form.csrf_token }}
+                        <input type="hidden" name="submit-btn">
+
+                        <div class="col-12">
+                            <div class="mb-4">
+                                {% set is_invalid = ' is-invalid' if form.title.errors|length else '' %}
+                                {{ form.title.label }}
+                                {{ form.title(size=20, class_="form-control"+ is_invalid, placeholder="Enter title here") }}
+                                <div class="invalid-feedback">
+                                    {% if form.title.errors %}
+                                        {% for error in form.title.errors %}
+                                            <div class="alert alert-danger ">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                            </div>
+                            {% if post is defined %}
+                            <div class="mb-4">
+                                <label>Parmalink:</label> 
+                                <small>
+                                    <span id="post-slug-update-container" class="d-none">
+                                        https://wayand.dk{{url_for('blog.posts')}}<input class="w-25 form-control form-control-sm d-inline-block" type="text" id="slug" value="{{post.slug}}">
+                                        <button type="button" id="post-slug-btn-update">update</button>
+                                        <button type="button" id="post-slug-btn-cancel-update">Cancel</button>
+                                    </span>
+                                    <span id="post-slug-container">
+                                        <a href="https://wayand.dk{{url_for('blog.get_post_by_slug', slug=post.slug)}}">
+                                            {{ post.parmalink }}
+                                        </a>
+                                        <button type="button" id="post-slug-btn-edit">Edit</button>
+                                    </span>
+                                </small>
+                            </div>
+                            <script>
+                                const PostSlugUpdateContainer = document.querySelector('#post-slug-update-container')
+                                const PostSlugContainer = document.querySelector('#post-slug-container')
+                                function toggleSlugUpdateContainer() {
+                                    if (PostSlugContainer.classList.contains('d-none')) {
+                                        PostSlugUpdateContainer.classList.add('d-none')
+                                        PostSlugContainer.classList.remove('d-none')
+                                    } else {
+                                        PostSlugUpdateContainer.classList.remove('d-none')
+                                        PostSlugContainer.classList.add('d-none')
+                                    }
+                                }
+                                document.querySelector('#post-slug-btn-edit').addEventListener('click', () => {
+                                    toggleSlugUpdateContainer()
+                                })
+                                // Cancel Post Slug update
+                                document.querySelector('#post-slug-btn-cancel-update').addEventListener('click', () => {
+                                    toggleSlugUpdateContainer()
+                                })
+                                document.querySelector('#post-slug-btn-update').addEventListener('click', () => {
+                                    console.log('Updating....')
+                                    fetch('{{url_for("apiv1.update_post_slug", id=post.id)}}', {
+                                        method: 'PATCH',
+                                        body: JSON.stringify({
+                                            slug: document.querySelector('#slug').value
+                                        }),
+                                        headers: {
+                                            'Content-Type': 'application/json; charset=UTF-8',
+                                        },
+                                    })
+                                    .then((response) => {status = response.status; return response.json()})
+                                    .then((json) => {
+                                        console.log('json::::', status)
+                                        if ('200' === status) {
+                                            PostSlugContainer.querySelector('a').innerHTML = json.parmalink
+                                            toggleSlugUpdateContainer()
+                                        } else {
+                                            console.log('Something went wrong: ', json)
+                                        }                                        
+                                    })
+                                })
+                            </script>
+                            {% endif %}
+                            <div class="mb-4">
+                                {% set is_invalid = ' is-invalid' if form.content.errors|length else '' %}
+                                {{ form.content.label }}
+                                {{ form.content(size=20, rows=20, class_="form-control"+ is_invalid) }}
+                                <div class="invalid-feedback">
+                                    {% if form.content.errors %}
+                                        {% for error in form.content.errors %}
+                                            <div class="alert alert-danger ">{{ error }}</div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <!-- right sidebar-->
+            <div class="col-12 col-xl-3">
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h2 class="fs-5 fw-bold mb-0">Post desciption</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            {% if post and post.status.value == 'publish' %}
+                                <svg class="w-6 h-6 icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                            {% else %}
+                                <svg class="w-6 h-6 icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M3.707 2.293a1 1 0 00-1.414 1.414l6.921 6.922c.05.062.105.118.168.167l6.91 6.911a1 1 0 001.415-1.414l-.675-.675a9.001 9.001 0 00-.668-11.982A1 1 0 1014.95 5.05a7.002 7.002 0 01.657 9.143l-1.435-1.435a5.002 5.002 0 00-.636-6.294A1 1 0 0012.12 7.88c.924.923 1.12 2.3.587 3.415l-1.992-1.992a.922.922 0 00-.018-.018l-6.99-6.991zM3.238 8.187a1 1 0 00-1.933-.516c-.8 3-.025 6.336 2.331 8.693a1 1 0 001.414-1.415 6.997 6.997 0 01-1.812-6.762zM7.4 11.5a1 1 0 10-1.73 1c.214.371.48.72.795 1.035a1 1 0 001.414-1.414c-.191-.191-.35-.4-.478-.622z"></path></svg>
+                            {% endif %}
+                            status: <strong>{{post.status.value if post else 'Draft'}}</strong>
+                        </p>
+                        <p>
+                            <svg class="w-6 h-6 icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                            published on: {{ post.published_at.strftime('%d %b, %Y at %H:%M') if post and post.published_at else '_' }}
+                        </p>                        
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h2 class="fs-5 fw-bold mb-0">{{ form.categories.label }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% set is_invalid = ' is-invalid' if form.categories.errors|length else '' %}
+                        {{ form.categories(class_="w-100 mb-0 choices__input is-hidden"+ is_invalid) }}
+                        <div class="invalid-feedback">
+                            {% if form.categories.errors %}
+                                {% for error in form.categories.errors %}
+                                    <div class="alert alert-danger ">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h2 class="fs-5 fw-bold mb-0">{{ form.tags.label }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% set is_invalid = ' is-invalid' if form.tags.errors|length else '' %}
+                        {{ form.tags(class_="w-100 mb-0 choices__input is-hidden"+ is_invalid) }}
+                        <div class="invalid-feedback">
+                            {% if form.tags.errors %}
+                                {% for error in form.tags.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h2 class="fs-5 fw-bold mb-0">{{ form.featured_image.label }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            {{ form.featured_image(class="form-control d-none" if post and post.featured_image_path else 'form-control') }}
+                        </div>
+                        <div class="{{ '' if post and post.featured_image_path else 'd-none' }}" id="featured_image_preview">
+                            <img src="{{ post.featured_image_path if post and post.featured_image_path else '' }}" />
+                            <p class="mt-2">
+                                <a href="javascript:void(0)" onclick="removeFeaturedImage()">
+                                    Remove featured image
+                                    <svg class="icon icon-xs ms-2" className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h2 class="fs-5 fw-bold mb-0">{{ form.summary.label }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% set is_invalid = ' is-invalid' if form.summary.errors|length else '' %}
+                        {{ form.summary(rows="3", class_="form-control"+ is_invalid, pattern=".{20,}", title="20 characters minimum") }}
+                        <div class="invalid-feedback">
+                            {% if form.summary.errors %}
+                                {% for error in form.summary.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script src="https://cdn.tiny.cloud/1/ttkj0src64usf2b7xuk2908l4wvaibmwhvhz82t8mkeql1yv/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    // TinyMCE init
+    tinymce.init({
+        selector: 'textarea',
+        menubar: '',
+        plugins: 'pagebreak image wordcount codesample code preview anchor lists visualblocks anchor link autolink',
+        toolbar: 'fontfamily fontsize blocks | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright alignjustify | pagebreak image | indent outdent codesample code preview numlist bullist visualblocks anchor link blockquote',
+        codesample_languages: [
+            { text: 'HTML/XML', value: 'markup' },
+            { text: 'JavaScript', value: 'javascript' },
+            { text: 'CSS', value: 'css' },
+            { text: 'PHP', value: 'php' },
+            { text: 'Ruby', value: 'ruby' },
+            { text: 'Python', value: 'python' },
+            { text: 'Java', value: 'java' },
+            { text: 'C', value: 'c' },
+            { text: 'C#', value: 'csharp' },
+            { text: 'C++', value: 'cpp' },
+            { text: 'SQL', value: 'sql' }
+        ],
+        allow_html_in_named_anchor: true,
+        link_default_target: '_blank',
+        pagebreak_split_block: true
+    });
+
+    const preview = document.querySelector('#featured_image_preview')
+    const fileupload = document.querySelector('#featured_image')
+    fileupload.addEventListener('change', (e) => showPreview(e))
+
+    // Featured image preview
+    function showPreview(event) {
+        if(event.target.files.length > 0) {
+            var src = URL.createObjectURL(event.target.files[0]);
+
+            preview.querySelector('img').src = src;
+            preview.classList.remove('d-none');
+            fileupload.classList.add('d-none')
+        }
+    }
+    {% if post %}
+    // Remove Featured image
+    function removeFeaturedImage() {
+        fetch('{{url_for("apiv1.feature_image_delete", id=post.id)}}', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+        .then((response) => { status = response.status; return response.json() })
+        .then((json) => {
+            console.log('json::::', status)
+            if ('200' === status) {
+                fileupload.value = '';
+                preview.querySelector('img').src = '';
+                preview.classList.add("d-none");
+                fileupload.classList.remove("d-none");
+            } else {
+                console.log('Something went wrong: ', json)
+            }
+        })
+    }
+    {% endif %}
+
+    // Form Validation
+    function showMessage(input, message, type) {
+        // get the small element and set the message
+        const msg = input.parentNode.querySelector(".invalid-feedback");
+        msg.innerText = message;
+        // update the class for the input
+        if (!type) {
+            input.classList.add("is-invalid");
+        }
+        return type;
+    }
+    function showError(input, message) {
+        return showMessage(input, message, false);
+    }
+    function hasLength(input, msg, min, max=null) {
+        if (!input.value) {
+            input.classList.remove("is-invalid");
+            return true
+        }
+        if (input.value.length >= min) {
+            if (max && input.value.length > max) {
+                return showError(input, msg);
+            }
+            input.classList.remove("is-invalid");
+            return true
+        }
+        return showError(input, msg);
+    }
+    function hasValue(input, message) {
+        if (input.value.trim() === "") {
+            return showError(input, message);
+        } else {
+            input.classList.remove("is-invalid");
+        }
+        return true;
+    }
+
+    // FormCreatePost Submit EventListener
+    const FormCreatePost = document.querySelector('#FormCreatePost')
+    FormCreatePost.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        FormCreatePost.elements['submit-btn'].value = document.activeElement.value == 'publish' ? 'publish' : 'draft'
+        console.log('postForm submitted', FormCreatePost.elements['submit-btn'].value)
+
+        if (validate_form()) {
+            console.log('Form is valid and going to submit...')
+            FormCreatePost.submit()
+        }
+    })
+
+    document.querySelectorAll('[type=Submit]').forEach((submitBtn) => {
+        submitBtn.addEventListener('click', validate_form)
+    })
+
+    function validate_form() {
+        let validTitle = hasValue(FormCreatePost.elements['title'], 'Title is required!')
+        let validContent = hasValue(FormCreatePost.elements['content'], 'Content is required!')
+        let validSummary = hasLength(FormCreatePost.elements['summary'], 'Summary must be 5 char long!', 5)
+
+        if (validSummary && validTitle && validContent) {
+            return true
+        }
+        return false
+    }
+
+    // choices, multiselect
+    // multiple
+    var selectCategoriesInputEl = d.querySelector('#categories');
+    if(selectCategoriesInputEl) {
+        const cats_choices = new Choices(selectCategoriesInputEl, {
+            placeholderValue: 'Please Choose…',
+            searchPlaceholderValue: 'Search…',
+            removeItemButton: true,
+            allowHTML: false,
+            //choices: JSON.parse( '{{ cats|safe }}' )
+        });
+    }
+    var selectTagsInputEl = d.querySelector('#tags');
+    if (selectTagsInputEl) {
+        const tags_choices = new Choices(selectTagsInputEl, {
+            placeholderValue: 'Please Choose…',
+            searchPlaceholderValue: 'Search…',
+            removeItemButton: true,
+            allowHTML: false,
+            //choices: JSON.parse( '{{ tags|safe }}' )
+        });
+    }
+
+</script>
+{% endblock %}

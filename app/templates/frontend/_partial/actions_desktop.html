@@ -1,0 +1,75 @@
+<div id="header-post">
+    <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+    <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+    <a id="top-icon-tablet" href="#" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+
+    <span id="menu" style="visibility: hidden;">
+        <span id="nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/blog">Writing</a></li>
+                <li><a href="/projects">Projects</a></li>
+            </ul>
+        </span>
+        <br />
+        <span id="actions">
+            <ul>
+                <li>
+                    <a class="icon" href="/hexo-theme-cactus/cactus-dark/public/2016/11/14/hello-world/">
+                        <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="toggle('#i-prev');" onmouseout="toggle('#i-prev');"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="icon" href="/hexo-theme-cactus/cactus-dark/public/2013/12/26/images/">
+                        <i class="fas fa-chevron-right" aria-hidden="true" onmouseover="toggle('#i-next');" onmouseout="toggle('#i-next');"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="icon" href="#" onclick="scrollToTop(500);">
+                        <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="toggle('#i-top');" onmouseout="toggle('#i-top');"></i>
+                    </a>
+                </li>
+                <li>
+                    <a class="icon" href="#">
+                        <i class="fas fa-share-alt" aria-hidden="true" onmouseover="toggle('#i-share');" onmouseout="toggle('#i-share');" onclick="toggle('#share');return false;"></i>
+                    </a>
+                </li>
+            </ul>
+            <span id="i-prev" class="info" style="display: none;">Previous post</span>
+            <span id="i-next" class="info" style="display: none;">Next post</span>
+            <span id="i-top" class="info" style="display: none;">Back to top</span>
+            <span id="i-share" class="info" style="display: none;">Share post</span>
+        </span>
+        <br>
+        <div id="share" style="display: none">
+            <ul>
+                <li><a class="icon"
+                        href="http://www.facebook.com/sharer.php?u=http://probberechts.github.io/2016/11/01/An-overview-of-all-Markdown-elements/"><i
+                            class="fab fa-facebook " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="https://twitter.com/share?url=http://probberechts.github.io/2016/11/01/An-overview-of-all-Markdown-elements/&amp;text=An overview of all Markdown elements"><i
+                            class="fab fa-twitter " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="http://www.linkedin.com/shareArticle?url=http://probberechts.github.io/2016/11/01/An-overview-of-all-Markdown-elements/&amp;title=An overview of all Markdown elements"><i
+                            class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+                <li><a class="icon"
+                        href="https://pinterest.com/pin/create/bookmarklet/?url=http://probberechts.github.io/2016/11/01/An-overview-of-all-Markdown-elements/&amp;is_video=false&amp;description=An overview of all Markdown elements"><i
+                            class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+        <div id="toc">
+            <ol class="toc">
+                {% if post %}
+                    {% for h2 in h2tags %}
+                        <li class="toc-item toc-level-2">
+                            <a class="toc-link" href="#{{ h2 | replace(" ", "-") }}">
+                                <span class="toc-number">1.</span>
+                                <span class="toc-text">{{ h2 }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ol>
+        </div>
+    </span>
+</div>
