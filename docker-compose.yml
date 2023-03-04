@@ -3,8 +3,8 @@ version: "3"
 services:
 
 	gunicorn:
-		container_name: wayand.dk_gunicorn
-		build: .
+		container_name: wayand_dk_gunicorn
+		build: ./
 		volumes:
 			- "./:/wayand.dk"
 		command: /bin/sh -c "./boot.sh"
