@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-
 	gunicorn:
 		container_name: wayand_dk_gunicorn
 		build: ./
