@@ -2,12 +2,12 @@ version: "3"
 
 services:
 
-  gunicorn:
-    container_name: wayand.dk_gunicorn
-    build: .
-    volumes:
-        - "./:/wayand.dk"
-    command: /bin/sh -c "/boot.sh"
-    ports:
-      - 5002:5000
-    restart: unless-stopped
+	gunicorn:
+		container_name: wayand.dk_gunicorn
+		build: .
+		volumes:
+			- "./:/wayand.dk"
+		command: /bin/sh -c "./boot.sh"
+		ports:
+			- 5002:5000
+		restart: unless-stopped
