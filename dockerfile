@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-WORKDIR /wayand.dk
+WORKDIR /var/www/html
 
 ARG DEBIAN_FRONTEND=noninteractive
 

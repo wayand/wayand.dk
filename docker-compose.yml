@@ -5,8 +5,8 @@ services:
         container_name: wayand_dk_gunicorn
         build: ./
         volumes:
-            - "./:/wayand.dk"
-        command: /bin/sh -c "./boot.sh"
+            - "./:/var/www/html"
+        command: /bin/sh -c "/var/www/html/boot.sh"
         ports:
             - 5002:5000
         restart: unless-stopped
