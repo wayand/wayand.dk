@@ -21,7 +21,7 @@ def save_uploaded_image(file):
     if not file:
         return None
     assets_dir = os.path.join(
-        os.path.dirname(current_app.instance_path), "app/static/images"
+        os.path.dirname(current_app.instance_path), "app/static/frontend/images"
     )
 
     filename = secure_filename(file.filename)
