@@ -4,32 +4,30 @@
         <div id="nav-footer" style="display: none">
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/blogs">Writing</a></li>
+                <li><a href="/blog">Writing</a></li>
                 <li><a href="/projects">Projects</a></li>
             </ul>
         </div>
 
         <div id="toc-footer" style="display: none">
             <ol class="toc">
-                <li class="toc-item toc-level-2">
-                    <a class="toc-link" href="#This-is-a-subtitle">
-                        <span class="toc-number">1.</span>
-                        <span class="toc-text">This is a subtitle</span>
-                    </a>
-                </li>
-                <li class="toc-item toc-level-2">
-                    <a class="toc-link" href="#This-is-a-second-subtitle">
-                        <span class="toc-number">2.</span>
-                        <span class="toc-text">This is a second subtitle</span>
-                    </a>
-                </li>
+                {% if post %}
+                    {% for h2 in h2tags %}
+                        <li class="toc-item toc-level-2">
+                            <a class="toc-link" href="#{{ h2 | replace(" ", "-") }}">
+                                <span class="toc-number">1.</span>
+                                <span class="toc-text">{{ h2 }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ol>
         </div>
 
         <div id="share-footer" style="display: none">
             <ul>
-                <li><a class="icon" href="facebook.com/sharer.php?u=http://this-blog.com/this/page"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-                <li><a class="icon" href="twitter.com/share.php?url=http://this-blog.com/this/page&text=hello-world"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+                <li><a class="icon" href="https://facebook.com/sharer.php?u={{ request.url }}"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+                <li><a class="icon" href="https://twitter.com/share.php?url={{ request.url }}"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
             </ul>
         </div>
 
