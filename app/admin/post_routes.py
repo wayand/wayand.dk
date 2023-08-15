@@ -65,6 +65,8 @@ def edit_post(id):
         ).all()
 
         post.title = form.title.data
+        post.meta_title = form.meta_title.data
+        post.meta_description = form.meta_description.data
         post.content = form.content.data
         post.summary = form.summary.data
 
@@ -124,6 +126,8 @@ def create_post():
             author_id=1,
             slug=helpers.create_slug(form.title.data),
             title=form.title.data,
+            meta_title=form.meta_title.data,
+            meta_description=form.meta_description.data,
             content=form.content.data,
             summary=form.summary.data,
             status=status,

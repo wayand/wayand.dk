@@ -39,6 +39,8 @@ class Post(BaseModel):
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     slug = db.Column(db.String(255), nullable=False, unique=True)
     title = db.Column(db.String(255), nullable=False)
+    meta_title = db.Column(db.String(255), nullable=True)
+    meta_description = db.Column(db.String(255), nullable=True)
     summary = db.Column(db.String(400))
     feature_image = db.Column(db.String(300))
     content = db.Column(db.Text)

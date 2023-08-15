@@ -39,6 +39,7 @@ nosetests.xml
 .vscode
 .DS_Store
 .env
+.venv
 env
 venv
 app.db

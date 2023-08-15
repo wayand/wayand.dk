@@ -3,14 +3,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="https://wayand.dk/">
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='frontend/images/favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='frontend/images/favicon-192x192.png') }}" sizes="192x192">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='frontend/images/apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ url_for('static', filename='frontend/site.webmanifest') }}">
 
-    <title>Wayand.dk</title>
-    <meta name="description" content="">
+    {% if post %}
+        {% set meta_title = post.meta_title if post.meta_title|length else post.title %}
+        {% set meta_description = post.meta_description if post.meta_description|length else post.title %}
+    {% else %}
+        {% set meta_title = 'Wayand.dk | Senior full-stack developer' %}
+        {% set meta_description = 'Welcome to my blog, I am excited to share my insights and knowledge with you through my blog posts. I hope you find my content informative and engaging. Thank you for visiting!' %}
+    {% endif %}
+
+    <title>{{ meta_title }}</title>
+    <meta name="description" content="{{ meta_description }}">
+
     <!-- styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='frontend/css/style.css') }}" />
 

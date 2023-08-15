@@ -17,6 +17,24 @@ class PostForm(FlaskForm):
             ),
         ],
     )
+    meta_title = StringField(
+        "Meta Title",
+        [
+            InputRequired(),
+            Length(
+                min=5, message="Meta Title length must be longer than %(min)d characters"
+            ),
+        ]
+    )
+    meta_description = StringField(
+        "Meta Description",
+        [
+            InputRequired(),
+            Length(
+                min=5,max=155, message="Meta Descriptions length must be between %(min)d and %(max)d characters"
+            ),
+        ]
+    )
     content = TextAreaField(
         "Content",
         [

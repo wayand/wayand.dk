@@ -122,6 +122,24 @@
                                 })
                             </script>
                             {% endif %}
+                            <div class="card">
+                                <div class="card-header">
+                                    SEO Meta information
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        {% set is_invalid = ' is-invalid' if form.meta_title.errors|length else '' %}
+                                        {{ form.meta_title.label }}
+                                        {{ form.meta_title(size=20, class_="form-control"+ is_invalid) }}
+                                    </div>
+                                    <div class="mb-4">
+                                        {% set is_invalid = ' is-invalid' if form.meta_description.errors|length else '' %}
+                                        {{ form.meta_description.label }}
+                                        {{ form.meta_description(size=20, class_="form-control"+ is_invalid) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="mb-4">
                                 {% set is_invalid = ' is-invalid' if form.content.errors|length else '' %}
                                 {{ form.content.label }}
