@@ -59,11 +59,11 @@ def index():
     '''generate URLs using language codes
         Note. used by flask-sitemap
     '''
-    yield 'main.index', {}, datetime.now(), '', 0.7
+    yield 'main.index', {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), '', 0.7
 
 @sitemap.register_generator
 def sitemap_projects():
     '''generate URLs using language codes
         Note. used by flask-sitemap
     '''
-    yield 'main.projects', {}, datetime.now(), '', 0.7
+    yield 'main.projects', {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), '', 0.7

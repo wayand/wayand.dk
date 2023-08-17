@@ -95,4 +95,4 @@ def sitemap_get_post_by_slug():
     '''
     posts = Post.query.filter_by(status=PostStatus.PUBLISH.name)
     for post in posts:
-        yield 'blog.get_post_by_slug', {"slug":post.slug}, post.updated_at, 'weekly', 0.9
+        yield 'blog.get_post_by_slug', {"slug":post.slug}, post.updated_at.strftime("%Y-%m-%dT%H:%M:%SZ"), 'weekly', 0.9
