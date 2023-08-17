@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_sitemap import Sitemap
 
 migrate = Migrate(compare_type=True)
 login = LoginManager()
@@ -23,6 +24,9 @@ def create_app(config_class):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
+
+    sitemap = Sitemap()
+    sitemap.init_app(app)
 
     from app.api import bp as api_bp
 
