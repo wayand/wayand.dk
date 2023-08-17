@@ -1,8 +1,10 @@
 from flask import json, render_template, flash, redirect, url_for, request
+from app import sitemap
 from app.blog import bp
 from app.models import Post, Category, PostStatus, Setting, SettingType
 from sqlalchemy import desc
 import re
+from datetime import datetime
 
 class PageHeading:
     title: str = "Posts"
@@ -84,3 +86,13 @@ def get_post_by_slug(slug):
         h2tags=h2tags,
         page_heading={},
     )
+
+
+@sitemap.register_generator
+def sitemap_get_post_by_slug():
+    '''generate URLs using language codes
+        Note. used by flask-sitemap
+    '''
+    posts = Post.query.filter_by(status=PostStatus.PUBLISH.name)
+    for post in posts:
+        yield 'blog.get_post_by_slug', {"slug":post.slug}, post.updated_at, 'weekly', 0.9

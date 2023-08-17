@@ -9,6 +9,8 @@ login.session_protection = "strong"
 login.login_view = "admin.login"
 login.login_message = "Please log in to access this page."
 
+sitemap = Sitemap()
+
 
 def page_not_found(e):
     return render_template("errors/404.html"), 404
@@ -24,9 +26,6 @@ def create_app(config_class):
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
-
-    sitemap = Sitemap()
-    sitemap.init_app(app)
 
     from app.api import bp as api_bp
 
@@ -44,7 +43,12 @@ def create_app(config_class):
 
     app.register_blueprint(blog_bp, url_prefix="/blog")
 
+
+    sitemap.init_app(app)
+
     # for k, v in app.config.items():
     #     print('k:', k, 'v:', v)
+
+    #print("Sitemap: ", app.config['SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS'])
 
     return app

@@ -1,8 +1,10 @@
 from flask import json, render_template, flash, redirect, url_for, request, current_app
+from app import sitemap
 from app.main import bp
 from datetime import date
 from app.models import db, User, Post, Setting, SettingType
 from sqlalchemy import desc
+from datetime import datetime
 
 
 class Me:
@@ -48,5 +50,20 @@ def index():
 
 
 @bp.get("/projects")
-def contact():
+def projects():
     return render_template("frontend/projects.html")
+
+
+@sitemap.register_generator
+def index():
+    '''generate URLs using language codes
+        Note. used by flask-sitemap
+    '''
+    yield 'main.index', {}, datetime.now(), '', 0.7
+
+@sitemap.register_generator
+def sitemap_projects():
+    '''generate URLs using language codes
+        Note. used by flask-sitemap
+    '''
+    yield 'main.projects', {}, datetime.now(), '', 0.7

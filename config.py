@@ -20,6 +20,8 @@ class Config:
 
     SECRET_KEY = "you-will-never-guess-the-secret-key"
 
+    SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS = False
+
 
 class ProductionConfig(Config):
     """Production configuration"""
