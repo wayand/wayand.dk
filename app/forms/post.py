@@ -31,7 +31,7 @@ class PostForm(FlaskForm):
         [
             InputRequired(),
             Length(
-                min=5,max=155, message="Meta Descriptions length must be between %(min)d and %(max)d characters"
+                min=5,max=255, message="Meta Descriptions length must be between %(min)d and %(max)d characters"
             ),
         ]
     )
