@@ -16,7 +16,7 @@ class Setting(BaseModel):
 
     __tablename__ = "settings"
     name = db.Column(db.String(100))
-    value = db.Column(db.String(100))
+    value = db.Column(db.Text)
     type = db.Column(db.Enum(SettingType))
 
     @classmethod

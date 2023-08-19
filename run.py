@@ -11,10 +11,13 @@ config_class = (
 )
 app = create_app(config_class)
 
+with app.app_context():
+    register_general_settings()
+
 # check here if the blog needs installation before start responsing to requests
 # @app.before_first_request
 # def before_first_request():
 #     app.logger.info("we are checking if everything is good and the app is installed.")
 
-#     ## check
-#     register_general_settings()
+## check
+#    register_general_settings()

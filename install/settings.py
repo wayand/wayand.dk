@@ -9,6 +9,7 @@ general_settings = {
     "includeOnBlogPagePosts": "excerpt",
     "dateFormat": "%d %b, %Y",
     "timeFormat": "%H:%M",
+    "googletag": "",
 }
 
 
