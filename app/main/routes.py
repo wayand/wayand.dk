@@ -51,19 +51,21 @@ def index():
 
 @bp.get("/projects")
 def projects():
-    return render_template("frontend/projects.html")
+    general_setting = Setting().of_type(SettingType.GENERAL)
+    return render_template("frontend/projects.html", general_setting=general_setting)
 
 
 @sitemap.register_generator
-def index():
-    '''generate URLs using language codes
-        Note. used by flask-sitemap
-    '''
-    yield 'main.index', {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), '', 0.7
+def sitemap_index():
+    """generate URLs using language codes
+    Note. used by flask-sitemap
+    """
+    yield "main.index", {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), "", 0.7
+
 
 @sitemap.register_generator
 def sitemap_projects():
-    '''generate URLs using language codes
-        Note. used by flask-sitemap
-    '''
-    yield 'main.projects', {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), '', 0.7
+    """generate URLs using language codes
+    Note. used by flask-sitemap
+    """
+    yield "main.projects", {}, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), "", 0.7
