@@ -1266,7 +1266,7 @@ body {
 .post-list .post-item .meta {
     display: block;
     margin-right: 16px;
-    min-width: 100px;
+    min-width: 105px;
     color: #666;
     font-size: 14px;
 }
