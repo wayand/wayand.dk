@@ -7,7 +7,7 @@
     {% if post %}
     <link rel="canonical" href="{{ url_for(request.endpoint, slug=post.slug, _external=True) }}">
     {% else %}
-    <link rel="canonical" href="{{ url_for(request.endpoint, _external=True) }}">
+    <link rel="canonical" href="{{ request.url }}">
     {% endif %}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='frontend/images/favicon.ico') }}">
@@ -37,7 +37,7 @@
     <script defer src="{{ url_for('static', filename='frontend/js/lib/prism.js') }}"></script>
     {% endif %}
 
-    {% if general_setting.googletag %}
+    {% if general_setting %}
     {{ general_setting['googletag'].value|safe }}
     {% endif %}
 </head>
