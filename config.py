@@ -21,11 +21,14 @@ class Config:
     SECRET_KEY = "you-will-never-guess-the-secret-key"
 
     SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS = False
+    SITEMAP_URL_SCHEME = "https"
 
 
 class ProductionConfig(Config):
     """Production configuration"""
+
     DEBUG = False
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""
