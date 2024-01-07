@@ -2,7 +2,7 @@ from flask import json, render_template, flash, redirect, url_for, request, curr
 from app import sitemap
 from app.main import bp
 from datetime import date
-from app.models import db, User, Post, Setting, SettingType
+from app.models import db, User, Post, Setting, SettingType, PostStatus
 from sqlalchemy import desc
 from datetime import datetime
 
@@ -19,7 +19,11 @@ class Me:
 
 
 def get_featured_post():
-    return Post.query.order_by(desc("id")).limit(6)
+    return (
+        Post.query.filter(Post.status == PostStatus.PUBLISH.name)
+        .order_by(desc("id"))
+        .limit(6)
+    )
 
 
 def get_user_info():
