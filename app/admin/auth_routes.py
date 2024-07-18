@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request
-from werkzeug.urls import url_parse
+from urllib.parse import urlparse
 from flask_login import login_user, logout_user, current_user, login_required
 from app.models import User
 from app.forms import (
@@ -39,7 +39,7 @@ def login():
         if user and user.check_password(password):
             login_user(user, remember=remember)
             next_page = request.args.get("next")
-            if not next_page or url_parse(next_page).netloc != "":
+            if not next_page or urlparse(next_page).netloc != "":
                 next_page = url_for("admin.dashboard")
             return redirect(next_page)
 
