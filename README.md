@@ -69,6 +69,7 @@ FLASK_DEBUG=1  # Set to 0 in production
 FLASK_ENV=development  # Set to production in production
 SECRET_KEY=your-secure-secret-key
 DATABASE_URL=postgresql+psycopg2://username:password@localhost:5432/wayand_dk
+TINYMCE_API_KEY=your-tinymce-api-key  # Get from https://www.tiny.cloud/
 ```
 
 4. Initialize the database:

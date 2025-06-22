@@ -18,6 +18,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 
     SECRET_KEY = os.environ.get("SECRET_KEY")
+    TINYMCE_API_KEY = os.environ.get("TINYMCE_API_KEY")
 
     SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS = False
     SITEMAP_URL_SCHEME = "https"

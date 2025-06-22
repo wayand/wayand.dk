@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {% if post %}
-    <link rel="canonical" href="{{ url_for(request.endpoint, slug=post.slug, _external=True) }}">
+    <link rel="canonical" href="{{ url_for(request.endpoint, slug=post.slug, _scheme='https', _external=True) }}">
     {% else %}
-    <link rel="canonical" href="{{ request.url }}">
+    <link rel="canonical" href="https://wayand.dk{{ request.path }}">
     {% endif %}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename='frontend/images/favicon.ico') }}">
