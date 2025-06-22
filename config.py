@@ -11,14 +11,13 @@ class Config:
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    CSRF_SESSION_KEY = "secret"
 
     # Flask-SQLAlchemy
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
 
-    SECRET_KEY = "you-will-never-guess-the-secret-key"
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
     SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS = False
     SITEMAP_URL_SCHEME = "https"
