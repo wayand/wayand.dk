@@ -47,3 +47,4 @@ app.db
 *.db
 temp_upload/
 logs/*
+app/static/frontend/images/*

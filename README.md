@@ -6,6 +6,11 @@
 
 This is the source code of [wayand.dk](https://wayand.dk), my personal blog and portfolio website. The platform is built with Flask and demonstrates my approach to building maintainable, secure, and scalable web applications.
 
+## Screenshots
+
+### Admin Interface - Posts Management
+![Admin Interface - Posts Management](admin-posts-screenshot.png)
+
 ## Technical Overview
 
 This project showcases several modern web development concepts and best practices:
@@ -153,4 +158,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Author
 
-Andreas Wayan - [wayand.dk](https://wayand.dk)
+[wayand.dk](https://wayand.dk)
