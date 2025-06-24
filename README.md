@@ -1,132 +1,156 @@
-# Wayand.dk Blog Platform
+# Wayand.dk - Personal Blog & Portfolio Platform
 
-A Flask-based blog platform with an administrative interface and frontend blog display. Currently powering [wayand.dk](https://wayand.dk).
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+This is the source code of [wayand.dk](https://wayand.dk), my personal blog and portfolio website. The platform is built with Flask and demonstrates my approach to building maintainable, secure, and scalable web applications.
 
-### Blog Frontend (`/blog`)
-- Post listing with pagination
-- Category-based post filtering (`/blog/categories/<category>`)
-- Tag-based post filtering (`/blog/tags/<tag>`)
-- Individual post view with SEO-friendly URLs (`/blog/<slug>`)
-- Automatic heading anchors for post navigation
-- SEO optimization with meta titles and descriptions
-- Sitemap generation
+## Technical Overview
 
-### Admin Dashboard (`/admin`)
-- Secure login system
-- Post Management:
-  - Create/Edit/Delete posts
-  - Rich text editor (TinyMCE)
-  - Featured image upload
-  - Draft/Publish workflow
-  - Bulk actions (trash, restore, delete)
-  - SEO metadata management
-- Category and Tag Management
-- Profile Management
-- Post filtering by status (Published/Draft/Trash)
-- Search functionality
+This project showcases several modern web development concepts and best practices:
 
-### API Endpoints (`/apiv1`)
-- Post management endpoints
-- Category and tag operations
-- Profile operations
-- Secure authentication required
+### Architecture
+- **Blueprint-based Structure**: Modular application design with separate blueprints for:
+  - Blog frontend (`/blog`)
+  - Admin interface (`/admin`)
+  - RESTful API (`/apiv1`)
+- **MVC Pattern**: Clear separation of:
+  - Models (SQLAlchemy)
+  - Views (Jinja2 templates)
+  - Controllers (Flask routes)
 
-## Tech Stack
-- **Backend**: Flask with Blueprints
+### Backend Implementation
+- **Authentication**: Secure user authentication using Flask-Login
 - **Database**: PostgreSQL with SQLAlchemy ORM
-- **Frontend**:
-  - Admin: Bootstrap-based dashboard
-  - Blog: Custom responsive design
-- **Editor**: TinyMCE for rich text editing
-- **Security**: Flask-Login for authentication
+- **Migration Management**: Flask-Migrate for database versioning
+- **Form Handling**: Flask-WTF with CSRF protection
+- **API Design**: RESTful API endpoints with JSON responses
+- **SEO**: Automatic sitemap generation and meta tag management
 
-## Installation
+### Frontend Features
+- **Admin Dashboard**:
+  - Rich text editing (TinyMCE)
+  - Image upload handling
+  - Post management (draft/publish workflow)
+  - Category and tag management
+- **Blog Frontend**:
+  - Responsive design
+  - SEO-optimized URLs
+  - Category and tag filtering
+  - Automatic heading anchors
 
-1. Clone the repository and create a virtual environment:
-```bash
-git clone git@github.com:wayand/wayand.dk.git
-cd wayand.dk/python
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Configure environment variables:
-```bash
-cp .env.sample .env
-```
-
-Required environment variables:
-```
-FLASK_APP=run.py
-FLASK_DEBUG=1  # Set to 0 in production
-FLASK_ENV=development  # Set to production in production
-SECRET_KEY=your-secure-secret-key
-DATABASE_URL=postgresql+psycopg2://username:password@localhost:5432/wayand_dk
-TINYMCE_API_KEY=your-tinymce-api-key  # Get from https://www.tiny.cloud/
-```
-
-4. Initialize the database:
-```bash
-flask db upgrade
-```
-
-5. Run the development server:
-```bash
-flask run
-```
+### Security Features
+- Password hashing with Werkzeug
+- CSRF protection
+- Secure session handling
+- Environment-based configuration
+- Protected admin routes
 
 ## Project Structure
 ```
 .
 ├── app/
 │   ├── admin/         # Admin interface blueprint
-│   ├── api/          # API endpoints (v1)
+│   ├── api/          # RESTful API endpoints
 │   ├── blog/         # Blog frontend blueprint
 │   ├── forms/        # WTForms definitions
 │   ├── models/       # SQLAlchemy models
-│   ├── static/       # Static assets
-│   │   ├── admin/    # Admin dashboard assets
-│   │   └── frontend/ # Blog frontend assets
+│   ├── static/       # Asset files
 │   ├── templates/    # Jinja2 templates
-│   └── utils/        # Utility functions
+│   └── utils/        # Helper functions
 ├── migrations/       # Database migrations
 └── config.py        # Configuration management
 ```
 
-## API Routes
+## Key Features
 
-### Posts
+### Content Management
+- Post creation and editing
+- Draft/publish workflow
+- Category and tag organization
+- Featured image management
+- SEO metadata management
+
+### API Endpoints
 - `GET /apiv1/posts` - List all posts
-- `PATCH /apiv1/posts/<id>/slug` - Update post slug
-- `PATCH /apiv1/posts/bulk-trash` - Move posts to trash
-- `PATCH /apiv1/posts/bulk-restore` - Restore posts from trash
-- `DELETE /apiv1/posts/<id>` - Delete a post
-- `DELETE /apiv1/posts/bulk-delete` - Delete multiple posts
+- `PATCH /apiv1/posts/<id>/slug` - Update post URL
+- `PATCH /apiv1/posts/bulk-trash` - Bulk post management
+- `DELETE /apiv1/posts/<id>` - Delete posts
+- Protected by authentication
 
-### Categories & Tags
-- `DELETE /apiv1/categories/<id>` - Delete a category
-- `DELETE /apiv1/categories` - Bulk delete categories
-- `DELETE /apiv1/tags` - Bulk delete tags
+### Admin Interface
+- Secure login system
+- Dashboard with post analytics
+- Content management
+- User profile management
+- Image upload handling
 
-## Development
+## Technical Dependencies
 
-### Running Tests
+- **Python**: 3.8 or higher
+- **Flask**: Web framework
+- **PostgreSQL**: Database
+- **SQLAlchemy**: ORM
+- **Flask-Login**: Authentication
+- **Flask-Migrate**: Database migrations
+- **Flask-WTF**: Forms and CSRF
+- **TinyMCE**: Rich text editing
+
+## Local Development Setup
+
+1. Clone and install dependencies:
 ```bash
-pytest
+git clone https://github.com/wayand/wayand.dk.git
+cd wayand.dk/python
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-### Database Migrations
+2. Configure environment:
 ```bash
-flask db migrate -m "Migration message"
+cp .env.sample .env
+# Edit .env with your configuration
+```
+
+3. Initialize database:
+```bash
 flask db upgrade
 ```
 
+4. Run development server:
+```bash
+flask run
+```
+
+## Production Deployment
+
+The site is deployed on DigitalOcean using:
+- Nginx as reverse proxy
+- Gunicorn as WSGI server
+- PostgreSQL database
+- SSL via Let's Encrypt
+
+## Architectural Decisions
+
+- **Flask over Django**: Chosen for its flexibility and lightweight nature
+- **Blueprint Structure**: Enables modular development and clear separation of concerns
+- **SQLAlchemy**: Provides powerful ORM capabilities and database abstraction
+- **TinyMCE**: Rich text editing with code syntax highlighting
+- **REST API**: Enables future frontend framework integration
+
+## Contributing
+
+While this is primarily the source code of my personal website, suggestions and improvements are welcome! Feel free to:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a Pull Request
+
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Author
+
+Andreas Wayan - [wayand.dk](https://wayand.dk)
